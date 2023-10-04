@@ -7,10 +7,6 @@
    
    <body>
 
-   <?php
-   include('../session.php');
-   ?>
-
    <!-- Page Header -->
    <div class="header">
       <div class="header-left">
@@ -50,10 +46,11 @@
    <?php
 
    if(array_key_exists('mod_unit_trigger', $_POST)) { // button trigger
-      $unitid = $_POST["unitid"];
-      $unitname = $_POST["unitname"];
-      $unitdesc = $_POST["unitdesc"];
-      update_unit($unit_id, $unit_name, $unit_desc)  ; 
+      include('../function_call.php');
+      $unit_id = $_POST["unitid"];
+      $unit_name = $_POST["unitname"];
+      $unit_desc = $_POST["unitdesc"];
+      update_unit($unit_id, $unit_name, $unit_desc) ; 
    }
 
    ?>

@@ -59,15 +59,15 @@ function get_single_result($table_name, $target_column, $filter_column, $where_c
 function update_unit($unit_id, $unit_name, $unit_desc){
     $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_USER, WS_DB_NAME);
 
-    $query = "SELECT * FROM t_unit WHERE unitid = $unitid";
+    $query = "SELECT * FROM t_unit WHERE unitid = $unit_id";
     if ($result = $mysqli -> query($query)) {
 
         if ($result -> num_rows > 0) {
-            $query = "UPDATE t_unit SET unitname = '$unitname', unitdesc = '$unitdesc' WHERE unitid = '$unitid'";
+            $query = "UPDATE t_unit SET unitname = '$unit_name', unitdesc = '$unit_desc' WHERE unitid = '$unit_id'";
             $result = $mysqli -> query($query);
             echo $result;
         } else {
-            $query = "INSERT INTO t_unit (unitid, unitname, unitdesc) VALUES ('$unitid', '$unitname', '$unitdesc')";
+            $query = "INSERT INTO t_unit (unitid, unitname, unitdesc) VALUES ('$unit_id', '$unit_name', '$unit_desc')";
             $result = $mysqli -> query($query);
             echo $result;
         }
@@ -78,11 +78,11 @@ function update_unit($unit_id, $unit_name, $unit_desc){
 function remove_unit($unit_id) {
     $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_USER, WS_DB_NAME);
 
-    $query = "SELECT * FROM t_unit WHERE unitid = $unitid";
+    $query = "SELECT * FROM t_unit WHERE unitid = $unit_id";
         if ($result = $mysqli -> query($query)) {
 
             if ($result -> num_rows > 0) {
-                $query = "DELETE FROM t_unit WHERE unitid = '$unitid'";
+                $query = "DELETE FROM t_unit WHERE unitid = '$unit_id'";
                 $result = $mysqli -> query($query);
                 echo $result;
             } else {
