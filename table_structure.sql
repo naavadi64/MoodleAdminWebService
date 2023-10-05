@@ -76,13 +76,6 @@ CREATE TABLE `t_event_log` (
   `event` varchar(128) COLLATE utf8mb3_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
---
--- Dumping data for table `t_event_log`
---
-
-INSERT INTO `t_event_log` (`time`, `event`) VALUES
-('2023-09-24 06:54:22', 'Database initialization');
-
 -- --------------------------------------------------------
 
 --
@@ -150,7 +143,7 @@ ALTER TABLE `t_course`
 --
 ALTER TABLE `t_course_enrollment`
   ADD KEY `fk_enrollment_from_user` (`userid`),
-  ADD KEY `fk_enrollement_from_course` (`courseid`);
+  ADD KEY `fk_enrollment_from_course` (`courseid`);
 
 --
 -- Indexes for table `t_role`
@@ -180,7 +173,7 @@ ALTER TABLE `t_user`
 -- AUTO_INCREMENT for table `t_assign`
 --
 ALTER TABLE `t_assign`
-  MODIFY `assignid` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `assignid` int NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
