@@ -45,25 +45,11 @@
 
    <?php
 
-   $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_USER, WS_DB_NAME);
-
    if(array_key_exists('rm_unit_trigger', $_POST)) { // button trigger
-      $unitid = $_POST["unitid"];
-      $query = "SELECT * FROM t_unit WHERE unitid = $unitid";
-      if ($result = $mysqli -> query($query)) {
-
-          if ($result -> num_rows > 0) { // unit id exists, update existing
-              echo "Deleting entry with Unit ID: $unitid<br><br>";
-              $query = "DELETE FROM t_unit WHERE unitid = '$unitid'";
-              $result = $mysqli -> query($query);
-              echo $result;
-
-          } else { // unit id does not exist, make new entry
-              echo "Error: Unit ID does not exist. <br><br>";
-          }
-
-      }
-  }
+      $unit_id = $_POST["unitid"];
+      include("../function_call.php");
+      remove_unit($unit_id);
+   }
 
    ?>
 
