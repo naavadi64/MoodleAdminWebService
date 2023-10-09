@@ -39,7 +39,7 @@
    <?php
     if(isset($_GET['course_id'])) {
         $course_id = $_GET['course_id'];
-        $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_USER, WS_DB_NAME);
+        $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
         $query = "SELECT * FROM t_course WHERE courseid = $course_id";
         if ($result = $mysqli -> query($query)) {
             if ($result -> num_rows > 0)

@@ -40,7 +40,7 @@
    <h2>List of Courses:</h2>
    <?php
 
-   $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_USER, WS_DB_NAME);
+   $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
    $course_count = 0;
 
    $query = "SELECT courseid, coursename FROM t_course ORDER BY courseid";
