@@ -40,7 +40,7 @@
    include('../function_call.php');
    $user_id = $_GET["user_id"];
 
-    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_USER, WS_DB_NAME);
+    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
 
     $query = "SELECT * FROM t_user WHERE userid = $user_id";
     if ($result = $mysqli -> query($query)) {
@@ -96,7 +96,7 @@
     <?php
     $user_id = $_GET["user_id"];
 
-    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_USER, WS_DB_NAME);
+    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
 
     $query = "SELECT t_course_enrollment.courseid, t_course.coursename, t_course_enrollment.progress FROM t_course_enrollment, t_course WHERE userid = $user_id AND t_course.courseid = t_course_enrollment.courseid";
     $course_count = 0;

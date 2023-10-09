@@ -38,7 +38,7 @@
    No. | Time Stamp (UTC+0) | Event <br>
    <?php
 
-   $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_USER, WS_DB_NAME); // Note two different methods of connecting is used, check that
+   $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME); // Note two different methods of connecting is used, check that
    $event_count = 0;
    $query = "SELECT * FROM t_event_log";
    if ($result = $mysqli -> query($query)) {

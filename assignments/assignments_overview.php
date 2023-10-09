@@ -64,7 +64,7 @@
    <?php
    include('../function_call.php');
 
-   $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_USER, WS_DB_NAME);
+   $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
    $course_count = 0;
 
    //$query = "SELECT * FROM t_assign";

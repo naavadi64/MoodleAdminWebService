@@ -39,7 +39,7 @@
     <?php
     if(isset($_GET['role_id'])) {
         $role_id = $_GET['role_id'];
-        $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_USER, WS_DB_NAME);
+        $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
         $query = "SELECT * FROM t_role WHERE roleid = $role_id";
         if ($result = $mysqli -> query($query)) {
             if ($result -> num_rows > 0)

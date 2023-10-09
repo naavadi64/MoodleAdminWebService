@@ -39,7 +39,7 @@
    <h2>List of Units:</h2>
    <?php
 
-   $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_USER, WS_DB_NAME);
+   $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
    $unit_count = 0;
 
    $query = "SELECT * FROM t_unit ORDER BY unitid";

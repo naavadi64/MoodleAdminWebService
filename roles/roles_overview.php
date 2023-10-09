@@ -40,7 +40,7 @@
    <h2>List of Roles:</h2>
    <?php
 
-   $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_USER, WS_DB_NAME);
+   $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
    $role_count = 0;
 
    $query = "SELECT * FROM t_role ORDER BY roleid";

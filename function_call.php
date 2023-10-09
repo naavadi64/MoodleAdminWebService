@@ -44,7 +44,7 @@ require_once "config.php";
 
 function get_single_result($table_name, $target_column, $filter_column, $where_clause) {
     // function to get a single column, row result from a database entry
-    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_USER, WS_DB_NAME);
+    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
 
     $query = "SELECT $target_column FROM $table_name WHERE $filter_column = $where_clause";
     if ($result = $mysqli -> query($query)) {
@@ -57,7 +57,7 @@ function get_single_result($table_name, $target_column, $filter_column, $where_c
 }
 
 function update_unit($unit_id, $unit_name, $unit_desc){
-    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_USER, WS_DB_NAME);
+    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
 
     $query = "SELECT * FROM t_unit WHERE unitid = $unit_id";
     if ($result = $mysqli -> query($query)) {
@@ -76,7 +76,7 @@ function update_unit($unit_id, $unit_name, $unit_desc){
 }
 
 function remove_unit($unit_id) {
-    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_USER, WS_DB_NAME);
+    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
 
     $query = "SELECT * FROM t_unit WHERE unitid = $unit_id";
         if ($result = $mysqli -> query($query)) {
@@ -93,7 +93,7 @@ function remove_unit($unit_id) {
 }
 
 function update_role($role_id, $role_name, $role_desc) {
-    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_USER, WS_DB_NAME);
+    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
 
     $query = "SELECT * FROM t_role WHERE roleid = $role_id";
     if ($result = $mysqli -> query($query)) {
@@ -113,7 +113,7 @@ function update_role($role_id, $role_name, $role_desc) {
 }
 
 function remove_role($role_id) {
-    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_USER, WS_DB_NAME);
+    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
 
     $query = "SELECT * FROM t_role WHERE roleid = $role_id";
     if ($result = $mysqli -> query($query)) {
@@ -129,7 +129,7 @@ function remove_role($role_id) {
 }
 
 function update_user($user_id, $username, $password, $userfname, $userlname, $email, $wsadmin) {
-    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_USER, WS_DB_NAME);
+    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
 
     $query = "SELECT * FROM t_user WHERE userid = $user_id";
     if ($result = $mysqli -> query($query)) {
@@ -150,7 +150,7 @@ function update_user($user_id, $username, $password, $userfname, $userlname, $em
 }
 
 function remove_user($user_id) {
-    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_USER, WS_DB_NAME);
+    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
 
     $query = "SELECT * FROM t_user WHERE userid = $user_id";
     if ($result = $mysqli -> query($query)) {
@@ -167,7 +167,7 @@ function remove_user($user_id) {
 }
 
 function update_course($course_id, $course_name, $course_desc) {
-    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_USER, WS_DB_NAME);
+    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
 
     $query = "SELECT * FROM t_course WHERE courseid = $course_id";
     if ($result = $mysqli -> query($query)) {
@@ -185,7 +185,7 @@ function update_course($course_id, $course_name, $course_desc) {
 }
 
 function remove_course($course_id) {
-    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_USER, WS_DB_NAME);
+    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
 
     $query = "SELECT * FROM t_course WHERE courseid = $course_id";
     if ($result = $mysqli -> query($query)) {
@@ -201,7 +201,7 @@ function remove_course($course_id) {
 }
 
 function update_assignment($assign_id, $user_id, $role_id, $unit_id, $start, $end, $contract, $status) {
-    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_USER, WS_DB_NAME);
+    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
 
     $query = "SELECT * FROM t_assign WHERE assignid = $assign_id";
     if ($result = $mysqli -> query($query)) {
@@ -220,7 +220,7 @@ function update_assignment($assign_id, $user_id, $role_id, $unit_id, $start, $en
 }
 
 function remove_assignment($assign_id) {
-    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_USER, WS_DB_NAME);
+    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
 
     $query = "SELECT * FROM t_assign WHERE assignid = $assign_id";
     if ($result = $mysqli -> query($query)) {
@@ -236,7 +236,7 @@ function remove_assignment($assign_id) {
 }
 
 function enrol_user($user_id, $course_id) {
-    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_USER, WS_DB_NAME);
+    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
 
     $query = "SELECT * FROM t_course_enrollment WHERE userid = '$user_id' AND courseid = '$course_id'";
     if ($result = $mysqli -> query($query)) {
@@ -255,7 +255,7 @@ function enrol_user($user_id, $course_id) {
 }
 
 function unenrol_user($user_id, $course_id) {
-    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_USER, WS_DB_NAME);
+    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
 
     $query = "SELECT * FROM t_course_enrollment WHERE userid = '$user_id' AND courseid = '$course_id'";
     if ($result = $mysqli -> query($query)) {
@@ -319,7 +319,7 @@ function get_moodle_categories() {
 function update_moodle_users() {
     $MoodleRest = init_moodlerest(true);
 
-    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_USER, WS_DB_NAME);
+    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
 
     $param_array = array("criteria" => array(0 => array("key" => "email", "value" => "%%"))); // get all users with email wildcard
     $user_request = $MoodleRest->request('core_user_get_users', $param_array);
@@ -383,7 +383,7 @@ function update_moodle_courses() {
     */
     $MoodleRest = init_moodlerest(true);
 
-    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_USER, WS_DB_NAME);
+    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
 
     $param_array = array();
     $request = $MoodleRest->request('core_course_get_courses', $param_array);
@@ -452,7 +452,7 @@ function update_users_enrol() {
     $MoodleRest->setReturnFormat(MoodleRest::RETURN_ARRAY);
     $MoodleRest->setDebug(false);
 
-    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_USER, WS_DB_NAME);
+    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
 
     $param_array = array("criteria" => array(0 => array("key" => "email", "value" => "%%")));
     $user_request = $MoodleRest->request('core_user_get_users', $param_array);
