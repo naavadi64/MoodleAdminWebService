@@ -31,7 +31,7 @@
 
    <!-- Page Body --->
    <div style="margin-left:25%;padding:1px 16px;height:1000px;">
-   <h1>Welcome <?php echo $login_session; ?></h1>
+   <h1 style="margin-top:200px">Welcome <?php echo $login_session; ?></h1>
    <br>
 
    <h2>Web Service Status Log:</h2>
