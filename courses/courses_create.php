@@ -41,18 +41,23 @@
         <input type="text" id="fullname" name="fullname">
         <label for="shortname"><br>Course Short Name: </label>
         <input type="text" id="shortname" name="shortname">
-        <!-- <label for="category_id"><br>Course Category ID: </label> lock category for now
-        <input type="text" id="category_id" name="category_id"> -->
+        <label for="category_id"><br>Course Category ID: </label>
+        <input type="text" id="category_id" name="category_id">
+        <br>
+        <input type="checkbox" id="add_sections" name="add_sections" value="add_sections">
+        <label for="visibilityy">Also add sections: </label>
+        <input type="number" id="batch_section_additions" name="batch_section_additions" min="1">
         <br><br>
-        <input type="submit" name="add_course_trigger" class="button" value="Add Template Course" />
+        <input type="submit" name="add_course_trigger" class="button" value="Create Course" />
     </form>
+
 
    <?php
 
    if(array_key_exists('add_course_trigger', $_POST)) { // button trigger
         $fullname = $_POST["fullname"];
         $shortname= $_POST["shortname"];
-        $category_id = 1;
+        $category_id = $_POST["category_id"]; // Todo chec value
 
         include('../function_call.php');
         $result = create_moodle_course($fullname, $shortname, $category_id);
@@ -61,6 +66,17 @@
         $course_name = $fullname;
         $course_desc = ""; //TODO: add desc field
         update_course($course_id, $course_name, $course_desc);
+
+        if(array_key_exists('add_sections', $_POST)) { 
+         $num_sections = $_POST['batch_section_additions'];
+         $added_sections = add_moodle_course_section($course_id, $num_sections);
+         // New blank sections are set to not visible
+         foreach ($added_sections as $new_section) {
+            $section_id = $new_section["sectionid"];
+            $section_num = $new_section["sectionnumber"];
+            set_moodle_course_section_visibility($course_id, $section_id, 0);
+         }
+      }
    }
 
    ?>
