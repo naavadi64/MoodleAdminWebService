@@ -89,10 +89,12 @@
       foreach ($contents as $section) {
          $section_id = $section["id"];
          $section_name = $section["name"];
+         $section_summary = $section["summary"];
          $visibility = $section["visible"] == 1 ? "Visible" : "Not Visible";
          $section_modules = count($section["modules"]);
          echo 
             ++$section_count . ". $section_name (ID:  $section_id)<br>" . 
+            "Summary: " . "$section_summary<br>" . 
             "Visibility: " . "$visibility<br>" . 
             "Number of modules: $section_modules<br>" . 
             "
@@ -100,6 +102,22 @@
             <input type='hidden' id='section_removal' name='section_removal' value='$section_id'>
             <input type='submit' name='section_removal_trigger' class='button' value='Remove Section ID: $section_id' />
             </form>
+            " . 
+            "
+            <form method='post'>
+               <input type='hidden' id='section_edit' name='section_edit' value='$section_id'>
+               <label for='section_addition'>Section Edit</label>
+               <label for='section_name'><br>Section Name:</label>
+               <input type='text' id='section_name' name='section_name'>
+               <label for='section_summary'><br>Section Summary (Optional):</label>
+               <input type='text' id='section_summary' name='section_summary'>
+               <br>
+               <input type='checkbox' id='visibility' name='visibility' value='1'>
+               <label for='visibility'>Enable visibility to students</label>
+
+               <br><br>
+               <input type='submit' name='section_edit_trigger' class='button' value='Edit Section ID: $section_id' />
+            </form><br><br>
             ";
       }
       
@@ -120,15 +138,14 @@
    </form>
       
    <form method="post">
-   <br>
-      <label for="section_addition"><br>Or<br><br> Add section with details:</label>
+      <label for="section_addition">Or<br><br> Add section with details:</label>
       <label for="section_name"><br>Section Name:</label>
       <input type="text" id="section_name" name="section_name">
       <label for="section_summary"><br>Section Summary (Optional):</label>
       <input type="text" id="section_summary" name="section_summary">
       <br>
       <input type="checkbox" id="visibility" name="visibility" value="1">
-      <label for="visibilityy">Enable visibility to students</label>
+      <label for="visibility">Enable visibility to students</label>
 
       <br><br>
       <input type="submit" name="section_addition_trigger" class="button" value="Add Section" />
@@ -165,6 +182,16 @@
       $section_summary = $_POST['section_summary'];
       $visibility = array_key_exists('visibility', $_POST) ? $visibility : $visibility = 0;
       echo $visibility;
+      edit_moodle_course_section($course_id, $section_id, $section_name, $section_summary, 1, $visibility, 0);
+      
+   }
+
+   if(array_key_exists('section_edit_trigger', $_POST)) {
+      $section_id = $_POST['section_edit'];
+      $section_name = $_POST['section_name'];
+      $section_summary = $_POST['section_summary'];
+      $visibility = array_key_exists('visibility', $_POST) ? $visibility : $visibility = 0;
+      echo $section_id . " | " . $section_name . " | " . $section_summary . " | " . $visibility;
       edit_moodle_course_section($course_id, $section_id, $section_name, $section_summary, 1, $visibility, 0);
       
    }
