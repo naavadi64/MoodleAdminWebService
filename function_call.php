@@ -310,8 +310,37 @@ function remove_moodle_user($user_id) {
 function get_moodle_categories() {
     $MoodleRest = init_moodlerest(true);
 
+    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
+
     $param_array = array();
-    $request = $MoodleRest->request('core_user_delete_users', $param_array);
+    $request = $MoodleRest->request('core_course_get_categories', $param_array);
+
+    foreach ($request as $category) {
+        $category_id = $category['id'];
+        $category_name = $category['name'];
+        $category_desc = $category['description'];
+
+        $query = "SELECT * FROM t_categories WHERE categoryid = $category_id";
+        if ($result = $mysqli -> query($query)) {
+            
+            if ($result -> num_rows > 0) {
+                echo "Category found, updating";
+                $result -> free_result();
+                $query = "UPDATE t_categories SET categoryname = '$category_name', categorydesc = '$category_desc', WHERE categoryid = $category_id;";
+                if ($result = $mysqli -> query($query)) {
+                    echo "Query result: " . $result;
+                }    
+            } else {
+                echo "Inserting new category";
+                $result -> free_result();
+                $query = "INSERT INTO t_categories (categoryid, categoryname, categorydesc) VALUES ('$category_id', '$category_name', '$category_desc')";   
+                if ($result = $mysqli -> query($query)) {
+                    echo "Query result: " . $result;
+                }
+            }
+        
+        }
+    }
 
     return $request;
 }
@@ -326,9 +355,9 @@ function update_moodle_users() {
     $user_count = 1;
     foreach ($user_request["users"] as $user) {
         // Set data from response to variables
-        $userid = $user['id'];
-        $userfname = $user["firstname"];
-        $userlname = $user["lastname"];
+        $user_id = $user['id'];
+        $user_f_name = $user["firstname"];
+        $user_l_name = $user["lastname"];
         $email = $user["email"];
         $username = $user["username"];
         $last_access = gmdate("Y-m-d g:i", $user["lastaccess"]); //  Note: Moodle's API returns Unix Epoch time/timestamp, remember to format to a readable format. Database is also expecting DateTime. gmdate should return time in GMT +0, handle epoch as never accessed.
@@ -339,14 +368,14 @@ function update_moodle_users() {
             if ($result -> num_rows > 0) {
                 echo "User data already in table, updating...<br>";
                 $result -> free_result();
-                $query = "UPDATE t_user SET userfname = '$userfname', userlname = '$userlname', email = '$email', username = '$username', lastaccess = '$last_access' WHERE userid = $userid;";
+                $query = "UPDATE t_user SET userfname = '$user_f_name', userlname = '$user_l_name', email = '$email', username = '$username', lastaccess = '$last_access' WHERE userid = $userid;";
                 if ($result = $mysqli -> query($query)) {
                     echo "Query result: " . $result;
                 }    
             } else {
                 echo "User data not yet in table, inserting...<br>";
                 $result -> free_result();
-                $query = "INSERT INTO t_user (userid, userfname, userlname, email, username, lastaccess) VALUES ('$userid', '$userfname', '$userlname', '$email', '$username', '$last_access')";   
+                $query = "INSERT INTO t_user (userid, userfname, userlname, email, username, lastaccess) VALUES ('$user_id', '$user_f_name', '$user_l_name', '$email', '$username', '$last_access')";   
                 if ($result = $mysqli -> query($query)) {
                     echo "Query result: " . $result;
                 }
@@ -380,6 +409,7 @@ function update_moodle_courses() {
         updates the Web Service's database.
         TODO: Handle enties that are no longer on Moodle but remain
         on WS's database.
+        Handle data concurrency on category id (moodle database and t_categories)
     */
     $MoodleRest = init_moodlerest(true);
 
@@ -392,23 +422,25 @@ function update_moodle_courses() {
         $course_id = $course["id"];
         $course_name = $course["fullname"];
         $course_desc = $course["summary"];
-
+        $category_id = $course["categoryid"];
+        
+        // Update t_course
         $query = "SELECT * FROM t_course WHERE courseid = $course_id";
         if ($result = $mysqli -> query($query)) {
 
             if ($result -> num_rows > 0) {
                 echo "Course data already in table, updating...<br>";
                 $result -> free_result();
-                $query = "UPDATE t_course SET coursename = '$course_name', coursedesc = '$course_desc' WHERE courseid = $course_id;";
+                $query = "UPDATE t_course SET coursename = '$course_name', coursedesc = '$course_desc', categoryid = '$category_id' WHERE courseid = $course_id;";
 
                 if ($result = $mysqli -> query($query)) {
                     echo "Query result: " . $result;
-                }
+                }              
                    
             } else {
                 echo "Course data not yet in table, inserting...<br>";
                 $result -> free_result();
-                $query = "INSERT INTO t_course (courseid, coursename, coursedesc) VALUES ('$course_id', '$course_name', '$course_desc')";
+                $query = "INSERT INTO t_course (courseid, coursename, coursedesc, categoryid) VALUES ('$course_id', '$course_name', '$course_desc', '$category_id')";
                 //echo $query;
                     
                 if ($result = $mysqli -> query($query)) {
@@ -417,10 +449,74 @@ function update_moodle_courses() {
                 }
             }
         
-        }  
+        }
 
     }
 
+}
+
+function show_moodle_course_sections($course_id, $exclude_modules = false, $exclude_module_contents = true) {
+    $MoodleRest = init_moodlerest(false);
+
+    $param_array = array("courseid" => $course_id, "options" => array(0 => array ("name" => "excludemodules", "value" => "$exclude_modules"), 1 => array ("name" => "excludecontents", "value" => "$exclude_module_contents")));
+    //"0" => array("excludemodules" => true)
+    $request = $MoodleRest->request('core_course_get_contents', $param_array);
+
+    return $request;
+}
+
+function add_moodle_course_section($course_id, $num_sections = 1) {
+    /* Adds blank section to a given $course_id.
+        To add information to the section, use edit_moodle_course_section while passing this function's returned section_id.
+    */
+    $MoodleRest = init_moodlerest(true);
+
+    $param_array = array("courseid" => $course_id, "position" => 0, "number" => $num_sections);
+    $request = $MoodleRest->request('local_wsmanagesections_create_sections', $param_array);
+
+    return $request;
+}
+
+function set_moodle_course_section_visibility($course_id, $section_id, $visibility) {
+    /* Sets $visibility only from given $section_id in $course_id
+        Simpified version of similar edit_moodle_course_section() function
+        "1" = visible, "0" = not visible
+    */
+    $MoodleRest = init_moodlerest(true);
+
+    $param_array = array("courseid" => $course_id, "sections" => array(0 => array("type" => "id", "section" => $section_id, "visible" => $visibility)));
+    $request = $MoodleRest->request('local_wsmanagesections_update_sections', $param_array);
+
+    return $request;
+}
+
+function edit_moodle_course_section($course_id, $section_id, $section_name = "", $section_summary = "", $summary_format = "1", $visibility, $highlight) {
+    /* Edits various section fields from given $section_id in $course_id
+        $visibility and $highlight are alwas required to be given in function call, defaults are 1 and 0 respectively.
+        TODO: currently only handles single sections, update to handle lists of sections and their details.
+
+    */
+    $MoodleRest = init_moodlerest(true);
+
+    $section_name == "" ? null : $section_name;
+    $section_summary == "" ? null : $section_summary;
+
+    $param_array = array("courseid" => $course_id, "sections" => array(0 => array("type" => "id", "section" => $section_id, "name" => $section_name, "summary" => $section_summary, "summaryformat" => $summary_format, "visible" => $visibility, "highlight" => $highlight)));
+    $request = $MoodleRest->request('local_wsmanagesections_update_sections', $param_array);
+
+    return $request;
+}
+
+function remove_moodle_course_section($course_id, $section_id) {
+    /* removes given $section_id in given $course_id
+        TODO: currently only handles single ids, expanmd to hgandle a list of int.
+    */
+    $MoodleRest = init_moodlerest(true);
+
+    $param_array = array("courseid" => $course_id, "sectionids" => array($section_id));
+    $request = $MoodleRest->request('local_wsmanagesections_delete_sections', $param_array);
+
+    return $request;
 }
 
 function remove_moodle_course($course_id) {

@@ -30,6 +30,12 @@
       <li><a href="../assignments/assignments_overview.php">Assignments</a></li>
       <li><a href="../users/users_overview.php">Users</a></li>
       <li><a href="../courses/courses_overview.php">Courses</a></li>
+
+      <!-- Test | page requires function to be present --->
+      <br>
+      <form method="post">
+         <input type="submit" name="sync_all_trigger" class="button" value="Sync Database" />
+      </form>
    </ul> 
 
    <!-- Page Body --->
@@ -37,10 +43,33 @@
    <h1 style="margin-top:100px">Course Overview</h1>
    <br>
 
+   <h2>List of Categories</h2>
+   <?php
+   $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
+
+   $category_count = 0;
+
+   $query = "SELECT categoryid, categoryname FROM t_categories ORDER BY categoryid";
+   if ($result = $mysqli -> query($query)) {
+      if ($result -> num_rows > 0)
+      {
+         while($row = $result->fetch_assoc()) {
+            //echo implode(" ",$row) . '<br><br>';
+            $category_id = $row["categoryid"];
+            $category_name = $row["categoryname"];
+            $category_link = "<a href='category_detail.php?category_id=$category_id'>$category_name - $category_id</a><br>";
+            echo ++$category_count . ". " . $category_link;
+         }
+      }
+   //echo "Query result: " . $result -> num_rows . " rows.";
+   $result -> free_result(); // Free result set
+   }
+   ?>
+
    <h2>List of Courses:</h2>
    <?php
 
-   $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
+   
    $course_count = 0;
 
    $query = "SELECT courseid, coursename FROM t_course ORDER BY courseid";
@@ -69,6 +98,7 @@
 
    if(array_key_exists('sync_course_trigger', $_POST)) { // button trigger
       include('../function_call.php');
+      get_moodle_categories();
       update_moodle_courses(); // Get courses from moodle API
       update_users_enrol(); // Update user course enrollment data
    }
