@@ -18,6 +18,9 @@ List of tables not dependant on Moodle (Moodle API calls not needed)
 - Role
 - Unit
 
+uses APIs from thhe external plugin: 
+- Webservice manage sections (https://moodle.org/plugins/local_wsmanagesections)
+
 Required Moodle API Functions:
 - core_user_create_users
 - core_user_get_users
@@ -27,6 +30,11 @@ Required Moodle API Functions:
 - core_course_delete_courses
 - enrol_manual_enrol_users
 - enrol_manual_unenrol_users
+The following is from an external plugin:
+- local_wsmanagesections_create_sections
+- local_wsmanagesections_delete_sections
+- local_wsmanagesections_update_sections
+- local_wsmanagesections_move_sections
 Make sure these functions are enabled on Moodle for the token
 authentication. Admin Users can check this on Site administration >
 Server > Web services > External service > Functions.
@@ -505,6 +513,14 @@ function edit_moodle_course_section($course_id, $section_id, $section_name = "",
     $request = $MoodleRest->request('local_wsmanagesections_update_sections', $param_array);
 
     return $request;
+}
+
+function move_moodle_course_section($course_id, $section_number, $target_position) {
+    /* TODO test and implement
+    */
+    $MoodleRest = init_moodlerest(true);
+    $param_array = array("courseid" => $course_id, "sectionnumber" => $section_number, $position => $target_position);
+    $request = $MoodleRest->request('local_wsmanagesections_update_sections', $param_array);
 }
 
 function remove_moodle_course_section($course_id, $section_id) {
