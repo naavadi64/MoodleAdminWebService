@@ -1,3 +1,5 @@
+-- TODO Update tables and columns to support course catgories
+
 -- phpMyAdmin SQL Dump
 -- version 5.1.1deb5ubuntu1
 -- https://www.phpmyadmin.net/
@@ -36,6 +38,18 @@ CREATE TABLE `t_assign` (
   `end` date NOT NULL,
   `contract` varchar(128) COLLATE utf8mb3_unicode_ci NOT NULL,
   `status` varchar(32) COLLATE utf8mb3_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `t_categories`
+--
+
+CREATE TABLE `t_categories` (
+  `categoryid` int NOT NULL,
+  `categoryname` varchar(64) COLLATE utf8mb3_unicode_ci NOT NULL,
+  `categorydesc` varchar(4096) COLLATE utf8mb3_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
 
@@ -133,10 +147,17 @@ ALTER TABLE `t_assign`
   ADD KEY `fk_assign_from_user` (`userid`);
 
 --
+-- Indexes for table `t_categories`
+--
+ALTER TABLE `t_categories`
+  ADD PRIMARY KEY (`categoryid`);
+
+--
 -- Indexes for table `t_course`
 --
 ALTER TABLE `t_course`
   ADD PRIMARY KEY (`courseid`);
+  ADD KEY `fk_categoryid_from_category` (`categoryid`);
 
 --
 -- Indexes for table `t_course_enrollment`
