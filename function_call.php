@@ -18,7 +18,7 @@ List of tables not dependant on Moodle (Moodle API calls not needed)
 - Role
 - Unit
 
-uses APIs from thhe external plugin: 
+uses APIs from these external plugins: 
 - Webservice manage sections (https://moodle.org/plugins/local_wsmanagesections)
 
 Required Moodle API Functions:
@@ -28,6 +28,7 @@ Required Moodle API Functions:
 - core_course_create_courses
 - core_course_get_courses
 - core_course_delete_courses
+- core_completion_get_activities_completion_status
 - enrol_manual_enrol_users
 - enrol_manual_unenrol_users
 The following is from an external plugin:
@@ -40,7 +41,7 @@ authentication. Admin Users can check this on Site administration >
 Server > Web services > External service > Functions.
 
 TODOs:
--   Enforce data with Moodle (no dangling or leftover entries after 
+-   Enforce data with Moodle (no dangling or leftover entries can occur- after 
     deletion API calls)
 -   Continually update docs and comments
 */
@@ -401,6 +402,19 @@ function update_moodle_users() {
         //$result -> free_result();
     }*/
         
+}
+
+function get_moodle_user_course_activity_status($user_id, $course_id) {
+    $MoodleRest = init_moodlerest(false);
+
+    $param_array = array("courseid" => $course_id, "userid" => $user_id);
+    // core_completion_get_course_completion_status
+    //$request = $MoodleRest->request('core_completion_get_course_completion_status', $param_array);
+    // core_completion_get_activities_completion_status
+    $request = $MoodleRest->request('core_completion_get_activities_completion_status', $param_array);
+
+
+    return $request;
 }
 
 function create_moodle_course($fullname, $shortname, $category_id) {
