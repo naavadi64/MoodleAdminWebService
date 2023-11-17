@@ -298,8 +298,8 @@ function init_moodlerest($debug = false) {
     return $MoodleRest;
 }
 
-function add_moodle_user($username, $password, $userfname, $userlname, $email) {
-    $MoodleRest = init_moodlerest(true);
+function add_moodle_user($username, $password, $userfname, $userlname, $email, $debug = false) {
+    $MoodleRest = init_moodlerest($debug);
 
     $param_array = array("users" => array(0 => array("username" => "$username", "auth" => "manual", "password" => "$password", "firstname" => "$userfname", "lastname" => "$userlname", "email" => "$email")));
     $request = $MoodleRest->request('core_user_create_users', $param_array);
@@ -307,8 +307,8 @@ function add_moodle_user($username, $password, $userfname, $userlname, $email) {
     return $request;
 }
 
-function remove_moodle_user($user_id) {
-    $MoodleRest = init_moodlerest(true);
+function remove_moodle_user($user_id, $debug = false) {
+    $MoodleRest = init_moodlerest($debug);
 
     $param_array = array("userids" => array(0 => $user_id));
     $request = $MoodleRest->request('core_user_delete_users', $param_array);
@@ -316,8 +316,8 @@ function remove_moodle_user($user_id) {
     return $request;
 }
 
-function get_moodle_categories() {
-    $MoodleRest = init_moodlerest(true);
+function get_moodle_categories($debug = false) {
+    $MoodleRest = init_moodlerest($debug);
 
     $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
 
@@ -354,8 +354,8 @@ function get_moodle_categories() {
     return $request;
 }
 
-function update_moodle_users() {
-    $MoodleRest = init_moodlerest(true);
+function update_moodle_users($debug = false) {
+    $MoodleRest = init_moodlerest($debug);
 
     $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
 
@@ -404,8 +404,8 @@ function update_moodle_users() {
         
 }
 
-function get_moodle_user_course_activity_status($user_id, $course_id) {
-    $MoodleRest = init_moodlerest(false);
+function get_moodle_user_course_activity_status($user_id, $course_id, $debug = false) {
+    $MoodleRest = init_moodlerest($debug);
 
     $param_array = array("courseid" => $course_id, "userid" => $user_id);
     // core_completion_get_course_completion_status
@@ -417,8 +417,8 @@ function get_moodle_user_course_activity_status($user_id, $course_id) {
     return $request;
 }
 
-function create_moodle_course($fullname, $shortname, $category_id) {
-    $MoodleRest = init_moodlerest(true);
+function create_moodle_course($fullname, $shortname, $category_id, $debug = false) {
+    $MoodleRest = init_moodlerest($debug);
 
     $param_array = array("courses" => array(0 => array("fullname" => $fullname, "shortname" => $shortname, "categoryid" => $category_id)));
     $request = $MoodleRest->request('core_course_create_courses', $param_array);
@@ -426,14 +426,14 @@ function create_moodle_course($fullname, $shortname, $category_id) {
     return $request;
 }
 
-function update_moodle_courses() {
+function update_moodle_courses($debug = false) {
     /*  Request an array of courses from Moodle via API and then
         updates the Web Service's database.
         TODO: Handle enties that are no longer on Moodle but remain
         on WS's database.
         Handle data concurrency on category id (moodle database and t_categories)
     */
-    $MoodleRest = init_moodlerest(true);
+    $MoodleRest = init_moodlerest($debug);
 
     $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
 
@@ -477,8 +477,8 @@ function update_moodle_courses() {
 
 }
 
-function show_moodle_course_sections($course_id, $exclude_modules = false, $exclude_module_contents = true) {
-    $MoodleRest = init_moodlerest(false);
+function show_moodle_course_sections($course_id, $exclude_modules = false, $exclude_module_contents = true, $debug = false) {
+    $MoodleRest = init_moodlerest($debug);
 
     $param_array = array("courseid" => $course_id, "options" => array(0 => array ("name" => "excludemodules", "value" => "$exclude_modules"), 1 => array ("name" => "excludecontents", "value" => "$exclude_module_contents")));
     //"0" => array("excludemodules" => true)
@@ -487,11 +487,11 @@ function show_moodle_course_sections($course_id, $exclude_modules = false, $excl
     return $request;
 }
 
-function add_moodle_course_section($course_id, $num_sections = 1) {
+function add_moodle_course_section($course_id, $num_sections = 1, $debug = false) {
     /* Adds blank section to a given $course_id.
         To add information to the section, use edit_moodle_course_section while passing this function's returned section_id.
     */
-    $MoodleRest = init_moodlerest(true);
+    $MoodleRest = init_moodlerest($debug);
 
     $param_array = array("courseid" => $course_id, "position" => 0, "number" => $num_sections);
     $request = $MoodleRest->request('local_wsmanagesections_create_sections', $param_array);
@@ -499,12 +499,12 @@ function add_moodle_course_section($course_id, $num_sections = 1) {
     return $request;
 }
 
-function set_moodle_course_section_visibility($course_id, $section_id, $visibility) {
+function set_moodle_course_section_visibility($course_id, $section_id, $visibility, $debug = false) {
     /* Sets $visibility only from given $section_id in $course_id
         Simpified version of similar edit_moodle_course_section() function
         "1" = visible, "0" = not visible
     */
-    $MoodleRest = init_moodlerest(true);
+    $MoodleRest = init_moodlerest($debug);
 
     $param_array = array("courseid" => $course_id, "sections" => array(0 => array("type" => "id", "section" => $section_id, "visible" => $visibility)));
     $request = $MoodleRest->request('local_wsmanagesections_update_sections', $param_array);
@@ -512,13 +512,13 @@ function set_moodle_course_section_visibility($course_id, $section_id, $visibili
     return $request;
 }
 
-function edit_moodle_course_section($course_id, $section_id, $section_name = "", $section_summary = "", $summary_format = "1", $visibility, $highlight) {
+function edit_moodle_course_section($course_id, $section_id, $section_name = "", $section_summary = "", $summary_format = "1", $visibility, $highlight, $debug = false) {
     /* Edits various section fields from given $section_id in $course_id
         $visibility and $highlight are alwas required to be given in function call, defaults are 1 and 0 respectively.
         TODO: currently only handles single sections, update to handle lists of sections and their details.
 
     */
-    $MoodleRest = init_moodlerest(true);
+    $MoodleRest = init_moodlerest($debug);
 
     $section_name == "" ? null : $section_name;
     $section_summary == "" ? null : $section_summary;
@@ -529,19 +529,19 @@ function edit_moodle_course_section($course_id, $section_id, $section_name = "",
     return $request;
 }
 
-function move_moodle_course_section($course_id, $section_number, $target_position) {
+function move_moodle_course_section($course_id, $section_number, $target_position, $debug = false) {
     /* TODO test and implement
     */
-    $MoodleRest = init_moodlerest(true);
+    $MoodleRest = init_moodlerest($debug);
     $param_array = array("courseid" => $course_id, "sectionnumber" => $section_number, $position => $target_position);
     $request = $MoodleRest->request('local_wsmanagesections_update_sections', $param_array);
 }
 
-function remove_moodle_course_section($course_id, $section_id) {
+function remove_moodle_course_section($course_id, $section_id, $debug = false) {
     /* removes given $section_id in given $course_id
         TODO: currently only handles single ids, expanmd to hgandle a list of int.
     */
-    $MoodleRest = init_moodlerest(true);
+    $MoodleRest = init_moodlerest($debug);
 
     $param_array = array("courseid" => $course_id, "sectionids" => array($section_id));
     $request = $MoodleRest->request('local_wsmanagesections_delete_sections', $param_array);
@@ -549,18 +549,18 @@ function remove_moodle_course_section($course_id, $section_id) {
     return $request;
 }
 
-function remove_moodle_course($course_id) {
+function remove_moodle_course($course_id, $debug = false) {
     /*  Removes a Moodle Course corrosponding to the given $course_id
         NOTE: does not update WS's database
     */
-    $MoodleRest = init_moodlerest(true);
+    $MoodleRest = init_moodlerest($debug);
 
     $param_array = array("courseids" => array(0 => $course_id));
     $request = $MoodleRest->request('core_course_delete_courses', $param_array);
 }
 
-function enrol_moodle_user($user_id, $course_id) {
-    $MoodleRest = init_moodlerest();
+function enrol_moodle_user($user_id, $course_id, $debug = false) {
+    $MoodleRest = init_moodlerest($debug);
     
     $param_array = array("enrolments" => array(0 => array("roleid" => "5", "userid" => "$user_id", "courseid" => "$course_id")));
     $request = $MoodleRest->request('enrol_manual_enrol_users', $param_array);
@@ -568,16 +568,8 @@ function enrol_moodle_user($user_id, $course_id) {
     return $request;
 }
 
-function update_users_enrol() {
-    $moodle_ip = MOODLE_IP;
-    $moodle_folder = MOODLE_FOLDER;
-    $moodle_token = TOKEN;
-    $MoodleRest = new MoodleRest();
-    $MoodleRest->setServerAddress("http://$moodle_ip/$moodle_folder/webservice/rest/server.php");
-    $MoodleRest->setToken($moodle_token);
-    $MoodleRest->setReturnFormat(MoodleRest::RETURN_ARRAY);
-    $MoodleRest->setDebug(false);
-
+function update_users_enrol($debug = false) {
+    $MoodleRest = init_moodlerest($debug);
     $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
 
     $param_array = array("criteria" => array(0 => array("key" => "email", "value" => "%%")));
