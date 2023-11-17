@@ -280,6 +280,35 @@ function unenrol_user($user_id, $course_id) {
     }
 }
 
+function generate_table($data_array) {
+    /* 
+    Generates and returns a table formatted in html. 
+    Expecting data_array in the form of array( array( {key} => {value} ) ).
+    Make sure data is formatted as and array of array of key-value pairs.
+    Any other input will cause the script to panic.
+    */
+    $html_result = "<table>";
+
+    // Set header:
+    $html_result .= "<tr>";
+    foreach($data_array[0] as $key=>$value) { // takes the first row and uses key (header) only
+        $html_result .= "<th>" . htmlspecialchars($key) . "</th>";
+    };
+    $html_result .= "</tr>";
+
+    // Set table body
+    foreach($data_array as $key=>$value) {
+        $html_result .= "<tr>";
+        foreach($value as $key2=>$value2) {
+            $html_result .= "<td>" . htmlspecialchars($value2) . "</td>";
+        }
+        $html_result .= "</tr>";
+    }
+
+    $html_result .= "</table>";
+    return $html_result;
+}
+
 // Moodle API related calls
 
 function init_moodlerest($debug = false) {
@@ -371,13 +400,13 @@ function update_moodle_users($debug = false) {
         $username = $user["username"];
         $last_access = gmdate("Y-m-d g:i", $user["lastaccess"]); //  Note: Moodle's API returns Unix Epoch time/timestamp, remember to format to a readable format. Database is also expecting DateTime. gmdate should return time in GMT +0, handle epoch as never accessed.
             
-        $query = "SELECT * FROM t_user WHERE userid = $userid";  
+        $query = "SELECT * FROM t_user WHERE userid = $user_id";  
         if ($result = $mysqli -> query($query)) {
 
             if ($result -> num_rows > 0) {
                 echo "User data already in table, updating...<br>";
                 $result -> free_result();
-                $query = "UPDATE t_user SET userfname = '$user_f_name', userlname = '$user_l_name', email = '$email', username = '$username', lastaccess = '$last_access' WHERE userid = $userid;";
+                $query = "UPDATE t_user SET userfname = '$user_f_name', userlname = '$user_l_name', email = '$email', username = '$username', lastaccess = '$last_access' WHERE userid = $user_id;";
                 if ($result = $mysqli -> query($query)) {
                     echo "Query result: " . $result;
                 }    
