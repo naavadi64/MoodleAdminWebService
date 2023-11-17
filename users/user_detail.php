@@ -2,7 +2,7 @@
    
    <head>
       <link rel="stylesheet" href="../styles/styles.css">
-      <title>Add New User</title>
+      <title>User Details</title>
    </head>
    
    <body>
@@ -109,9 +109,42 @@
                 $course_name = $row["coursename"];
                 $progress = $row["progress"];
                 echo ++$course_count . ". <a href='../courses/course_detail.php?course_id=$course_id'>$course_name (ID: $course_id)</a> - $progress% Complete<br>";
+
+                // pull data of user's actvitiy in moodle and save for later
+                $course_activity =  get_moodle_user_course_activity_status($user_id, $course_id);
+                $course_activity_data = array(); // store as [key: cmid] => [value: state]
+                foreach ($course_activity["statuses"] as $activity) {
+                    $cmid = $activity["cmid"];
+                    $cm_state = $activity["state"];
+                    $course_activity_data[$cmid] = $cm_state;
+                };
+
+                //print_r($course_activity_data);
+                //Array ( [9] => 1 [10] => 1 [11] => 1 [12] => 0 ) 
+
+                $course_sections = show_moodle_course_sections($course_id);
+                echo "<br>";
+                foreach($course_sections as $section) {
+                    echo $section["name"] . "<br>";
+
+                    foreach($section["modules"] as $module) {
+                        $module_name = $module["name"];
+                        $module_id = $module["id"];
+                        $module_completion_type = $module["completion"]; // Type of completion tracking: 0 means none, 1 manual, 2 automatic.
+                        echo '&nbsp&nbsp&nbsp&nbsp - ' . $module["name"] . " (Module ID: " . $module["id"] . ")";
+                        if (array_key_exists($module_id, $course_activity_data)) {
+                            $completion = $course_activity_data[$module_id] == 0 ? "Not Completed." : "Done.";
+                            echo " -> " . $completion;
+                        };
+                        echo "<br>";
+                    }
+
+                    echo "<br>";
+                };
+                echo "<br>";
             }
         } else {
-            echo "Course not found! Please check and sync database<br>";
+            echo "No courses found! Please check and sync database<br>";
             
         }
     }
