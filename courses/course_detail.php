@@ -159,13 +159,21 @@
    // iterate over list of users, call api to check user activity completion
    $data = Array();
    foreach ($user_list as $user_id => $user) { // $user = Array($username, $progress)
+      $completed = 0;
+      $total = 0;
       $data_row = Array("User ID" => $user_id, "Name" => $user[0]);
       $activities = get_moodle_user_course_activity_status($user_id, $course_id);
       foreach ($activities["statuses"] as $activity) {
          $activity_name = $activity_list[$activity["cmid"]];
-         $activity["state"] == 1 ? $data_row[$activity_name] = "Done" : $data_row[$activity_name] = "Not Completed";
+         if ($activity["state"] == 1) {
+            $data_row[$activity_name] = "Done";
+            $completed++;
+         } else {
+            $data_row[$activity_name] = "Not Completed";
+         }
+         $total++;
       }
-      $data_row["Course Progress"] = $user[1] . "%";
+      $data_row["Course Progress"] = $user[1] . "% (" . $completed . "/" . $total . ")";
       $data[] = $data_row;
    }
    echo generate_table($data) . "<br>";
