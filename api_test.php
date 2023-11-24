@@ -111,14 +111,14 @@
 
    // Get list of users enrolled in course
    $user_list = array();
-   $query = "SELECT t_user.username, t_user.userid FROM t_user, t_course_enrollment WHERE t_course_enrollment.courseid ='$course_id' AND t_course_enrollment.userid = t_user.userid";
+   $query = "SELECT t_user.username, t_user.userid, t_course_enrollment.progress FROM t_user, t_course_enrollment WHERE t_course_enrollment.courseid ='$course_id' AND t_course_enrollment.userid = t_user.userid";
    if ($result = $mysqli -> query($query)) {
-      if ($result -> num_rows > 0)
-      {
+      if ($result -> num_rows > 0) {
          while($row = $result->fetch_assoc()) {
             $user_id = $row["userid"];
             $username = $row["username"];
-            $user_list[$row["userid"]] = $row["username"];
+            $progress = $row["progress"];
+            $user_list[$user_id] = Array($username, $progress);
          }
             
       $result -> free_result();
@@ -127,14 +127,15 @@
 
    // iterate over list of users, call api to check user activity completion
    $data = Array();
-   foreach ($user_list as $user_id => $username) {
-      $row = Array("User ID" => $user_id, "Name" => $username);
+   foreach ($user_list as $user_id => $user) { // $user = Array($username, $progress)
+      $data_row = Array("User ID" => $user_id, "Name" => $user[0]);
       $activities = get_moodle_user_course_activity_status($user_id, $course_id);
       foreach ($activities["statuses"] as $activity) {
          $activity_name = $activity_list[$activity["cmid"]];
-         $activity["state"] == 1 ? $row[$activity_name] = "Done" : $row[$activity_name] = "Not Completed";
+         $activity["state"] == 1 ? $data_row[$activity_name] = "Done" : $data_row[$activity_name] = "Not Completed";
       }
-      $data[] = $row;
+      $data_row["Course Progress"] = $user[1] . "%";
+      $data[] = $data_row;
    }
    //echo print_r($data) . "<br>";
    echo generate_table($data) . "<br>";
