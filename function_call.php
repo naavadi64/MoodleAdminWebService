@@ -300,7 +300,7 @@ function generate_table($data_array) {
     foreach($data_array as $key=>$value) {
         $html_result .= "<tr>";
         foreach($value as $key2=>$value2) {
-            $html_result .= "<td>" . htmlspecialchars($value2) . "</td>";
+            $html_result .= "<td>" . $value2 . "</td>";
         }
         $html_result .= "</tr>";
     }

@@ -58,9 +58,9 @@
             $result -> free_result(); 
         }
 
-        echo "Enroled Users:<br>";
+        /*echo "Enroled Users:<br>";
         $query = "SELECT t_user.username, t_user.userid FROM t_user, t_course_enrollment WHERE t_course_enrollment.courseid ='$course_id' AND t_course_enrollment.userid = t_user.userid";
-        //echo $query . "<br>";
+        $user_count = 1;
         if ($result = $mysqli -> query($query)) {
             if ($result -> num_rows > 0)
             {
@@ -68,17 +68,18 @@
                   //echo implode(" ", $row) . "<br>";
                   $username = $row["username"];
                   $user_id = $row["userid"];
-                  echo "<a href='../users/user_detail.php?user_id=$user_id'>$username</a><br>";
+                  echo $user_count++ . ". " . "<a href='../users/user_detail.php?user_id=$user_id'>$username</a><br>";
+                  
                }
             
             $result -> free_result(); 
             }
-        }
+        }*/
 
     } else {
         echo 
             "
-            No Unit ID has been specified.
+            No Course ID has been specified.
             ";
     }
 
@@ -119,13 +120,59 @@
                <input type='submit' name='section_edit_trigger' class='button' value='Edit Section ID: $section_id' />
             </form><br><br>
             ";
-      }
-      
-      //echo '<pre>'; print_r($contents); echo '</pre>';
+      }   
 
     }
 
+   echo "<h2>User and Activity Table<h2>";
+
+   // Get activity module list w/ name
+   $activity_list = Array();
+   $course = show_moodle_course_sections($course_id, false);
+   foreach ($course as $section) {
+      foreach ($section["modules"] as $module) {
+         if (array_key_exists("completion", $module)) { // handle empty sections in course
+            if ($module["completion"] == 1)
+            {
+               $activity_list[$module["id"]] = $module["name"];
+            };
+         }
+      }
+   }
+
+   // Get list of users enrolled in course
+   $user_list = array();
+   $query = "SELECT t_user.username, t_user.userid FROM t_user, t_course_enrollment WHERE t_course_enrollment.courseid ='$course_id' AND t_course_enrollment.userid = t_user.userid";
+   if ($result = $mysqli -> query($query)) {
+      if ($result -> num_rows > 0)
+      {
+         while($row = $result->fetch_assoc()) {
+            $user_id = $row["userid"];
+            $username = $row["username"];
+            //echo $user_count++ . ". " . "<a href='../users/user_detail.php?user_id=$user_id'>$username</a><br>";
+            $user_link = "<a href='../users/user_detail.php?user_id=$user_id'>$username</a><br>";
+            $user_list[$row["userid"]] = $user_link;
+         }
+            
+      $result -> free_result();
+      }
+   };
+
+   // iterate over list of users, call api to check user activity completion
+   $data = Array();
+   foreach ($user_list as $user_id => $username) {
+      $row = Array("User ID" => $user_id, "Name" => $username);
+      $activities = get_moodle_user_course_activity_status($user_id, $course_id);
+      foreach ($activities["statuses"] as $activity) {
+         $activity_name = $activity_list[$activity["cmid"]];
+         $activity["state"] == 1 ? $row[$activity_name] = "Done" : $row[$activity_name] = "Not Completed";
+      }
+      $data[] = $row;
+   }
+   echo generate_table($data) . "<br>";
+
    ?>
+   <br>
    <form method="post">
       <input type="submit" name="show_contents_trigger" class="button" value="Show Course Contents" />
    </form>
