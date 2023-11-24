@@ -149,7 +149,8 @@
             $user_id = $row["userid"];
             $username = $row["username"];
             $progress = $row["progress"];
-            $user_list[$user_id] = Array($username, $progress);
+            $user_link = "<a href='../users/user_detail.php?user_id=$user_id'>$username</a><br>";
+            $user_list[$user_id] = Array($user_link, $progress);
          }
             
       $result -> free_result();
