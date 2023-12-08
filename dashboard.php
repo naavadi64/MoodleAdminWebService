@@ -37,71 +37,46 @@
    <h2>Web Service Status Log:</h2>
    No. | Time Stamp (UTC+0) | Event <br>
    <?php
+   require_once('lib_database.php');
 
-   $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME); // Note two different methods of connecting is used, check that
-   $event_count = 0;
-   $query = "SELECT * FROM t_event_log";
-   if ($result = $mysqli -> query($query)) {
-      //echo "Submitted query: " . $query . '<br>';
-      if ($result -> num_rows > 0) // shows query result if num of rows > 0
-      {
-         while($row = $result->fetch_assoc()) {
-            //cho implode(" ",$row) . '<br><br>';
-            echo ++$event_count. " | " . $row['time'] . " | " . $row["event"] . "<br>";
-         }
-      }
-   //echo "Query result: " . $result -> num_rows . " rows.";
-   $result -> free_result(); // Free result set
+   $status = get_database_status();
+   foreach ($status as $count => $event) {
+   echo $count . ". | " . $event["time"] . " | " . $event["event"];
    }
 
-   ?>
-
-   <h2>Service Overview:</h2>
-
-   <?php
+   echo "<h2>Service Overview:</h2>";
+   $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
 
    $query = "SELECT COUNT(*) AS 'count' FROM t_user";
    if ($result = $mysqli -> query($query)) {
-      if ($result -> num_rows > 0) // Should always return 1 row
-      {
-         while($row = $result->fetch_assoc()) {
-            echo "Total users (including guest account): " . $row["count"] . '<br>';
-         }
-      }   
-   $result -> free_result(); // Free result set
+      while($row = $result->fetch_assoc()) {
+         echo "Total users (including guest account): " . $row["count"] . '<br>';
+      }
+      $result -> free_result();
    }
 
    $query = "SELECT COUNT(*) AS 'count' FROM t_course; ";
    if ($result = $mysqli -> query($query)) {
-      if ($result -> num_rows > 0) 
-      {
-         while($row = $result->fetch_assoc()) {
-            echo "Total courses (including Moodle Site): " . $row["count"] . '<br>';
-         }
+      while($row = $result->fetch_assoc()) {
+         echo "Total courses (including Moodle Site): " . $row["count"] . '<br>';
       }
-   $result -> free_result(); // Free result set
+      $result -> free_result();
    }
 
    $query = "SELECT COUNT(*) AS 'count' FROM t_unit; ";
    if ($result = $mysqli -> query($query)) {
-      if ($result -> num_rows > 0) 
-      {
-         while($row = $result->fetch_assoc()) {
-            echo "Total units: " . $row["count"] . '<br>';
-         }
+      while($row = $result->fetch_assoc()) {
+         echo "Total units: " . $row["count"] . '<br>';
       }
-   $result -> free_result(); // Free result set
+      $result -> free_result(); // Free result set
    }
 
    $query = "SELECT COUNT(*) AS 'count' FROM t_role; ";
    if ($result = $mysqli -> query($query)) {
-      if ($result -> num_rows > 0) 
-      {
          while($row = $result->fetch_assoc()) {
             echo "Total roles: " . $row["count"] . '<br>';
          }
-      }
-   $result -> free_result(); // Free result set
+      $result -> free_result(); // Free result set
    }
 
    ?>

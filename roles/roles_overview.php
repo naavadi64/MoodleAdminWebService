@@ -39,25 +39,17 @@
 
    <h2>List of Roles:</h2>
    <?php
+   require_once("../lib_database.php");
 
    $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
    $role_count = 0;
 
-   $query = "SELECT * FROM t_role ORDER BY roleid";
-   if ($result = $mysqli -> query($query)) {
-      //echo "Submitted query: " . $query . '<br>';
-      if ($result -> num_rows > 0) // shows query result if num of rows > 0
-      {
-         while($row = $result->fetch_assoc()) {
-            //echo implode(" ",$row) . '<br><br>';
-            $role_id = $row["roleid"];
-            $role_name = $row["rolename"];
-            $role_link = "<a href='role_detail.php?role_id=$role_id'>$role_name - $role_id</a><br>";
-            echo ++$role_count . ". " . $role_link;
-         }
-      }
-   //echo "Query result: " . $result -> num_rows . " rows.";
-   $result -> free_result(); // Free result set
+   $roles = get_all_roles();
+   foreach ($roles as $index => $role) {
+      $role_id = $role["roleid"];
+      $role_name = $role["rolename"];
+      $role_link = "<a href='role_detail.php?role_id=$role_id'>$role_name - $role_id</a><br>";
+      echo ++$index . ". " . $role_link;
    }
 
    ?>

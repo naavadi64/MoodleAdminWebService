@@ -36,25 +36,30 @@
    <div style="margin-left:20%;padding:1px 16px;height:1000px;">
    <h1 style="margin-top:100px">Role Details</h1>
 
-    <?php
-    if(isset($_GET['role_id'])) {
-        $role_id = $_GET['role_id'];
-        $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
-        $query = "SELECT * FROM t_role WHERE roleid = $role_id";
-        if ($result = $mysqli -> query($query)) {
-            if ($result -> num_rows > 0)
-            {
-                while($row = $result->fetch_assoc()) {
-                    $role_name = $row['rolename'];
-                    $role_desc = $row['roledesc'];
-                    echo 
-                        "Role Name: " . $role_name . "<br>" . 
-                        "Role ID: " . $role_id . "<br><br>" . 
-                        "Role Description:<br>" . $role_desc . "<br>";
-                }
-            }
-            $result -> free_result(); 
-        }
+   <?php
+   require_once("../lib_database.php");
+   if(isset($_GET['role_id'])) {
+      $role_id = $_GET['role_id'];
+
+      $role = get_single_role($role_id);
+      echo 
+         "Role Name: " . $role['rolename'] . "<br>" . 
+         "Role ID: " . $role['roleid'] . "<br><br>" . 
+         "Role Description:<br>" . $role['roledesc'] . "<br>";
+
+      echo "<h2>Users with this role:</h2>";
+
+      $users = get_users_in_role($role_id);
+      if ($users[0]["username"] == "No users with this role.<br>") {
+         echo $users[0]["username"];
+      } else {
+         foreach ($users as $index => $user) {
+            $username = $user['username'];
+            $user_id = $user['userid'];
+            echo ++$index . ". <a href='../users/user_detail.php?user_id=$user_id'>$username  (ID: $user_id)</a><br>";
+         }
+      }
+
     } else {
         echo 
             "

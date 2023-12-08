@@ -39,25 +39,16 @@
    <h2>List of Units:</h2>
    <?php
 
-   $mysqli = new mysqli(WS_DB_IP, WS_DB_USER, WS_DB_PASS, WS_DB_NAME);
-   $unit_count = 0;
+   require_once("../lib_database.php");
 
-   $query = "SELECT * FROM t_unit ORDER BY unitid";
-   if ($result = $mysqli -> query($query)) {
-      //echo "Submitted query: " . $query . '<br>';
-      if ($result -> num_rows > 0) // shows query result if num of rows > 0
-      {
-         while($row = $result->fetch_assoc()) {
-            //echo implode(" ",$row) . '<br><br>';
-            $unit_id = $row["unitid"];
-            $unit_name = $row["unitname"];
-            $unit_link = "<a href='unit_detail.php?unit_id=$unit_id'>$unit_name - $unit_id</a>";
-            echo ++$unit_count . ". " . $unit_link . "<br>";
-         }
-      }
-   //echo "Query result: " . $result -> num_rows . " rows.";
-   $result -> free_result(); // Free result set
-   }
+   $units = get_all_units();
+   $unit_count = 0;
+   foreach ($units as $unit) {
+      $unit_id = $unit["unitid"];
+      $unit_name = $unit["unitname"];
+      $unit_link = "<a href='unit_detail.php?unit_id=$unit_id'>$unit_name - $unit_id</a>";
+      echo ++$unit_count . ". " . $unit_link . "<br>";
+   } 
 
    ?>
 
