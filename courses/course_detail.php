@@ -37,7 +37,7 @@
    <h1 style="margin-top:100px">Course Details</h1>
 
    <?php
-   include('../function_call.php');
+   include('../lib_moodle.php');
 
     if(isset($_GET['course_id'])) {
         $course_id = $_GET['course_id'];

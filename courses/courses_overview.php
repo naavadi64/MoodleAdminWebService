@@ -97,7 +97,7 @@
    <?php
 
    if(array_key_exists('sync_course_trigger', $_POST)) { // button trigger
-      include('../function_call.php');
+      include('../lib_moodle.php');
       get_moodle_categories();
       update_moodle_courses(); // Get courses from moodle API
       update_users_enrol(); // Update user course enrollment data

@@ -55,7 +55,7 @@
       $role_id = $_POST["roleid"];
       $role_name = $_POST["rolename"];
       $role_desc = $_POST["roledesc"];
-      include('../function_call.php');
+      include('../lib_database.php');
       update_role($role_id, $role_name, $role_desc);
    }
 

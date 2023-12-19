@@ -47,7 +47,7 @@
 
    if(array_key_exists('rm_assign_trigger', $_POST)) { // button trigger
       $assign_id = $_POST["assign_id"];
-      include('../function_call.php');
+      include('../lib_database.php');
       remove_assignment($assign_id);
    }
 

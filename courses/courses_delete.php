@@ -47,7 +47,7 @@
 
    if(array_key_exists('rm_course_trigger', $_POST)) { // button trigger
       $course_id = $_POST["course_id"];
-      include('../function_call.php');
+      include('../lib_moodle.php');
       remove_moodle_course($course_id);
       remove_course($course_id);
    }

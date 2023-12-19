@@ -47,7 +47,7 @@
 
    if(array_key_exists('rm_role_trigger', $_POST)) { // button trigger
       $role_id = $_POST["role_id"];
-      include('../function_call.php');
+      include('../lib_database.php');
       remove_role($role_id);
    }
 

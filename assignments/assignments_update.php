@@ -68,7 +68,7 @@
         $contract = $_POST["contract"];
         $status = $_POST["status"];
 
-        include('../function_call.php');
+        include('../lib_database.php');
         $result = update_assignment($assign_id, $user_id, $role_id, $unit_id, $start, $end, $contract, $status);
    }
    

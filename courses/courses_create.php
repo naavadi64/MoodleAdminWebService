@@ -59,7 +59,7 @@
         $shortname= $_POST["shortname"];
         $category_id = $_POST["category_id"]; // Todo chec value
 
-        include('../function_call.php');
+        include('../lib_moodle.php');
         $result = create_moodle_course($fullname, $shortname, $category_id);
 
         $course_id = $result[0]["id"];
